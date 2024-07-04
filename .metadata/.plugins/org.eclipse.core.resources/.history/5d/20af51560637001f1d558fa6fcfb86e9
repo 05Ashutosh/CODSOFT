@@ -1,0 +1,190 @@
+//package Servlet;
+//
+//import jakarta.servlet.ServletException;
+//import jakarta.servlet.annotation.WebServlet;
+//import jakarta.servlet.http.HttpServlet;
+//import jakarta.servlet.http.HttpServletRequest;
+//import jakarta.servlet.http.HttpServletResponse;
+//import jakarta.servlet.http.HttpSession;
+//
+//import java.io.IOException;
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//import Helper.DBUtil;
+//import Helper.Question;
+//import Helper.Result;
+//
+///**
+// * Servlet implementation class Quiz_S
+// */
+//@WebServlet("/Quiz_S")
+//public class Quiz_S extends HttpServlet {
+//	private static final long serialVersionUID = 1L;
+//    private static final int TIME_LIMIT = 20;
+//       
+//    /**
+//     * @see HttpServlet#HttpServlet()
+//     */
+//    public Quiz_S() {
+//        super();
+//        // TODO Auto-generated constructor stub
+//    }
+//
+//	/**
+//	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+//	 */
+//	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		// TODO Auto-generated method stub
+//		response.getWriter().append("Served at: ").append(request.getContextPath());
+//	}
+//
+//	/**
+//	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+//	 */
+//	 protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//	        HttpSession session = request.getSession();
+//	        List<Question> questions = (List<Question>) session.getAttribute("questions");
+//
+//	        if (questions == null) {
+//	            questions = DBUtil.getQuestions();
+//	            session.setAttribute("questions", questions);
+//	            session.setAttribute("questionNumber", 0);
+//	            session.setAttribute("score", 0);
+//	            session.setAttribute("results", new ArrayList<Result>());
+//	            session.setAttribute("startTime", System.currentTimeMillis());
+//	        }
+//
+//	        int questionNumber = (int) session.getAttribute("questionNumber");
+//	        int score = (int) session.getAttribute("score");
+//	        List<Result> results = (List<Result>) session.getAttribute("results");
+//
+//	        long startTime = (long) session.getAttribute("startTime");
+//	        long currentTime = System.currentTimeMillis();
+//	        int elapsedTime = (int) ((currentTime - startTime) / 1000);
+//
+//	        if (questionNumber > 0 && elapsedTime < TIME_LIMIT) {
+//	            int selectedOption = Integer.parseInt(request.getParameter("option"));
+//	            Question previousQuestion = questions.get(questionNumber - 1);
+//	            boolean correct = previousQuestion.getCorrectOp() == selectedOption;
+//	            if (correct) score++;
+//	            results.add(new Result(previousQuestion.getQuestion(), selectedOption, previousQuestion.getCorrectOp()));
+//	        }
+//
+//	        if (questionNumber < questions.size() && elapsedTime < TIME_LIMIT) {
+//	            request.setAttribute("question", questions.get(questionNumber));
+//	            request.setAttribute("questionNumber", questionNumber + 1);
+//	            request.setAttribute("elapsedTime", elapsedTime);
+//	            session.setAttribute("questionNumber", questionNumber + 1);
+//	            request.getRequestDispatcher("quiz.jsp").forward(request, response);
+//	        } else {
+//	            session.setAttribute("score", score);
+//	            session.setAttribute("results", results);
+//	            request.getRequestDispatcher("result.jsp").forward(request, response);
+//	        }
+//	 }
+//}
+
+
+package Servlet;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import Helper.DBUtil;
+import Helper.Question;
+import Helper.Result;
+
+@WebServlet("/Quiz_S")
+public class Quiz_S extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+    private static final int TIME_LIMIT = 20;
+
+    public Quiz_S() {
+        super();
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        List<Question> questions = DBUtil.getQuestions();
+        session.setAttribute("questions", questions);
+        session.setAttribute("questionNumber", 0);
+        session.setAttribute("score", 0);
+        session.setAttribute("results", new ArrayList<Result>());
+        session.setAttribute("startTime", System.currentTimeMillis());
+
+        request.setAttribute("question", questions.get(0));
+        request.setAttribute("questionNumber", 1);
+        request.setAttribute("elapsedTime", 0);
+        request.getRequestDispatcher("quiz.jsp").forward(request, response);
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        List<Question> questions = (List<Question>) session.getAttribute("questions");
+        if (questions == null) {
+            questions = DBUtil.getQuestions();
+            session.setAttribute("questions", questions);
+        }
+
+        Integer questionNumberObj = (Integer) session.getAttribute("questionNumber");
+        if (questionNumberObj == null) {
+            questionNumberObj = 0;
+            session.setAttribute("questionNumber", questionNumberObj);
+        }
+        int questionNumber = questionNumberObj;
+
+        Integer scoreObj = (Integer) session.getAttribute("score");
+        if (scoreObj == null) {
+            scoreObj = 0;
+            session.setAttribute("score", scoreObj);
+        }
+        int score = scoreObj;
+
+        List<Result> results = (List<Result>) session.getAttribute("results");
+        if (results == null) {
+            results = new ArrayList<Result>();
+            session.setAttribute("results", results);
+        }
+
+        Long startTimeObj = (Long) session.getAttribute("startTime");
+        if (startTimeObj == null) {
+            startTimeObj = System.currentTimeMillis();
+            session.setAttribute("startTime", startTimeObj);
+        }
+        long startTime = startTimeObj;
+        long currentTime = System.currentTimeMillis();
+        int elapsedTime = (int) ((currentTime - startTime) / 1000);
+
+        if (questionNumber > 0 && elapsedTime < TIME_LIMIT) {
+            int selectedOption = Integer.parseInt(request.getParameter("option"));
+            Question previousQuestion = questions.get(questionNumber - 1);
+            boolean correct = previousQuestion.getCorrectOp() == selectedOption;
+            if (correct) score++;
+            results.add(new Result(previousQuestion.getQuestion(), selectedOption, previousQuestion.getCorrectOp()));
+        }
+
+        if (questionNumber < questions.size() && elapsedTime < TIME_LIMIT) {
+            request.setAttribute("question", questions.get(questionNumber));
+            request.setAttribute("questionNumber", questionNumber + 1);
+            request.setAttribute("elapsedTime", elapsedTime);
+            session.setAttribute("questionNumber", questionNumber + 1);
+            session.setAttribute("score", score);
+            session.setAttribute("results", results);
+            request.getRequestDispatcher("quiz.jsp").forward(request, response);
+        } else {
+            session.setAttribute("score", score);
+            session.setAttribute("results", results);
+            request.getRequestDispatcher("result.jsp").forward(request, response);
+        }
+    }
+}
+

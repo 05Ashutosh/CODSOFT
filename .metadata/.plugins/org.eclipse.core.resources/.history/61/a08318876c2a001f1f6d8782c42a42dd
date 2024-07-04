@@ -1,0 +1,24 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>Enter Marks for Each Subject</h1>
+	<form action="CalculatorGradeServlet" method="post">
+		<label for="maths">Maths</label>
+		<input type="number" max=100 min=0 id="maths">
+		<label for="science">Science</label>
+		<input type="number" max=100 min=0 id="science">
+		<label for="cs">Computer Science</label>
+		<input type="number" max=100 min=0 id="cs">
+		<label for="english">English</label>
+		<input type="number" max=100 min=0 id="english">
+		<label for="cs">Operating System</label>
+		<input type="number" max=100 min=0 id="cs">
+	</form>
+</body>
+</html>

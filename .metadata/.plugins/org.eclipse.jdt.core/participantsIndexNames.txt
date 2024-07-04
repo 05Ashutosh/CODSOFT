@@ -1,0 +1,9 @@
+INDEX VERSION 1.134
+D:\Language\JavaBackEnd\CodeSoft\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\4015436672.index
+\number_game\src\main\java
+D:\Language\JavaBackEnd\CodeSoft\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2246362638.index
+\Student Course Registration System\src\main\java
+D:\Language\JavaBackEnd\CodeSoft\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2516529242.index
+\Quiz_App_with_Timer\src\main\java
+D:\Language\JavaBackEnd\CodeSoft\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3228167108.index
+\student_grade_calculator\src\main\java
