@@ -71,5 +71,8 @@ build/
 *.bak
 *.swp
 
-# Exclude Servers folder
-Servers/
+# Ignore Server folder
+Server/
+
+# Ignore .metadata directory
+.metadata/
